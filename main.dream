@@ -1,5 +1,27 @@
 let fst = @x@y x in
 let snd = @x@y y in
 let fst! = @x@y x in
-let pair = @p @x@y (p x y) in
-(fst! (pair 1 2))
+let pair = @x@y @p (p x y) in
+let swap! = @p (p (@x@y (pair y x))) in
+let (true!? : bool) = false in
+let typ_id_lam =
+  λ(b : bool). b
+in
+let (typ_id_let : 'a -> 'a) = @x x in
+let id = λx x in
+let let_in_let = let x = 2 in x in
+let not! =
+  if true
+  then @x@y y
+  else @x@y x
+in
+let op2 = (+ 1 2) in
+let op2 = (>= 3 (+ 2 1)) in
+let op2 =
+  if (= 1 1)
+  then false
+  else true
+in
+let op2 = (= (* 3 (9)) 27) in
+let call = (fst! (pair 1 2)) in
+(print_int! call)

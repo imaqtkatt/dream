@@ -45,10 +45,10 @@ rule read = parse
   | '>' '=' { GTE }
   | '<' { LT }
   | '<' '=' { LTE }
+  | "true" { BOOL true }
+  | "false" { BOOL false }
   | ident alpha * ['!' '?' '\'']*? as id { IDENT id }
   | integer as intg { INTEGER (int_of_string intg) }
   | apos ident alpha * as t { TYPEVAR t }
-  | "true" { BOOL true }
-  | "false" { BOOL false }
   | eof { EOF }
   | _ { raise @@ SyntaxError ("") }
