@@ -1,0 +1,5 @@
+let fst = @x@y x in
+let snd = @x@y y in
+let fst! = @x@y x in
+let pair = @p @x@y (p x y) in
+(fst! (pair 1 2))
