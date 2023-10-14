@@ -18,6 +18,8 @@ let skippable = [' ' '\t' '\r']
 rule read = parse
   | newline { Lexing.new_line lexbuf; read lexbuf }
   | skippable+ { read lexbuf }
+  | "//" { read_comment lexbuf }
+  | "()" { UNIT }
   | "struct" { STRUCT }
   | "type" { TYPE }
   | "let" { LET }
@@ -54,3 +56,7 @@ rule read = parse
   | apos ident alpha * as t { TYPEVAR t }
   | eof { EOF }
   | _ { raise @@ SyntaxError ("") }
+
+and read_comment = parse
+  | newline { Lexing.new_line lexbuf; read lexbuf }
+  | _ { read_comment lexbuf }

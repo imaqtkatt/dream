@@ -11,6 +11,7 @@ and typ =
 [@@deriving show]
 
 and expr =
+  | E_Unit
   | E_Var of string
   | E_Int of int
   | E_Str of string
@@ -38,12 +39,14 @@ and op =
 [@@deriving show]
 
 and toplevel =
-  | TL_FnDecl of string * fn_arg list * typ option * expr
+  | TL_Const of string * typ option * expr
+  | TL_FnDecl of string * pat list * typ option * expr
   | TL_TyAlias of string * typ
   | TL_Struct of string * struct_field list
 [@@deriving show]
 
-and fn_arg =
+and pat =
+  | Unit
   | Annot of annot
   | Name of string
 [@@deriving show]

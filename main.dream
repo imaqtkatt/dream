@@ -1,20 +1,24 @@
+// Comments are just ignored by the lexer
+
+// We can't do cool things with structs yet
 struct foo {
   id : int,
   name : string
 }
 
-let one = 1
+// Constants
+one = 1
+foo : unit = ()
 
+// Types are just aliases
 type id' = 'a -> 'a
 
-let apply (p : id') a : 'a = {
-  let res = (p a) in
-  res
-}
+// This is a function
+id (x : 'a) : 'a = x
 
 type pair = 'a -> 'b -> ('a -> 'b -> 'p) -> 'p
 
-let main =
+main () : unit =
   let fst = @x@y x in
   let snd = @x@y y in
   let fst! = @x@y x in

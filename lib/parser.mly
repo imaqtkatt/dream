@@ -5,6 +5,7 @@
 %token <string> IDENT
 %token <int> INTEGER
 %token <bool> BOOL
+%token UNIT
 
 %token <string> TYPEVAR
 
@@ -65,6 +66,7 @@ let prog2 :=
   | EOF; { None }
 
 let toplevel :=
+  | const_decl
   | fn_decl
   | typ_decl
   | struct_decl
@@ -75,10 +77,14 @@ let struct_decl :=
 let struct_field ==
   | name = IDENT; COLON; t = sub_typ; { { field_name = name; field_typ = t; } }
 
+let const_decl :=
+  | id = IDENT; t = fn_typ?; EQ; body = expr; { TL_Const (id, t, body) }
+
 let fn_decl :=
-  | LET; id = IDENT; args = list(fn_arg); t = fn_typ?; body = fn_body;
+  | id = IDENT; args = nonempty_list(pat); t = fn_typ?; body = fn_body;
     { TL_FnDecl (id, args, t, body) }
-let fn_arg :=
+let pat :=
+  | UNIT; { Unit }
   | id = IDENT; { Name id }
   | annot = annot; { Annot annot }
 let fn_body ==
@@ -145,6 +151,7 @@ let sub_primary :=
   | LPARENS; p = expr; RPARENS; { p }
 
 let primary :=
+  | UNIT; { E_Unit }
   | id = IDENT; { E_Var id }
   | i = INTEGER; { E_Int i }
   | b = BOOL; { E_Bool b }
