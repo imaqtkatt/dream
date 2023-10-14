@@ -18,6 +18,8 @@ let skippable = [' ' '\t' '\r']
 rule read = parse
   | newline { Lexing.new_line lexbuf; read lexbuf }
   | skippable+ { read lexbuf }
+  | "struct" { STRUCT }
+  | "type" { TYPE }
   | "let" { LET }
   | "in" { IN }
   | "if" { IF }

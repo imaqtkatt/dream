@@ -14,6 +14,7 @@
 
 %token IF THEN ELSE
 %token LET IN
+%token TYPE STRUCT
 
 %token ARROW
 %token LAMBDA
@@ -31,15 +32,11 @@
 %right ARROW
 
 %start <expr option> prog
-%start <typ option> typ
+%start <program option> prog2
 
 %%
 
 (* types *)
-
-let typ :=
-  | t = sub_typ; EOF; { Some t }
-  | EOF; { None }
 
 let sub_typ :=
   | arr_typ
@@ -62,6 +59,36 @@ let prim_typ :=
 let prog :=
   | e = expr; EOF; { Some e }
   | EOF; { None }
+
+let prog2 :=
+  | decls = toplevel*; EOF; { Some { decls = decls } }
+  | EOF; { None }
+
+let toplevel :=
+  | fn_decl
+  | typ_decl
+  | struct_decl
+
+let struct_decl :=
+  | STRUCT; id = IDENT; LBRACE; fields = separated_nonempty_list(COMMA, struct_field); RBRACE;
+    { TL_Struct (id, fields) }
+let struct_field ==
+  | name = IDENT; COLON; t = sub_typ; { { field_name = name; field_typ = t; } }
+
+let fn_decl :=
+  | LET; id = IDENT; args = list(fn_arg); t = fn_typ?; body = fn_body;
+    { TL_FnDecl (id, args, t, body) }
+let fn_arg :=
+  | id = IDENT; { Name id }
+  | annot = annot; { Annot annot }
+let fn_body ==
+  | EQ; LBRACE; body = expr; RBRACE; { body }
+  | EQ; body = expr; { body }
+let fn_typ ==
+  | COLON; t = sub_typ; { t }
+
+let typ_decl :=
+  | TYPE; id = IDENT; EQ; typ = sub_typ; { TL_TyAlias (id, typ) }
 
 let expr :=
   | op2

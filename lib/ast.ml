@@ -41,14 +41,18 @@ and toplevel =
   | TL_FnDecl of string * fn_arg list * typ option * expr
   | TL_TyAlias of string * typ
   | TL_Struct of string * struct_field list
+[@@deriving show]
 
 and fn_arg =
   | Annot of annot
   | Name of string
+[@@deriving show]
 
 and struct_field = {
   field_name : string;
   field_typ : typ;
 }
+
+and program = { decls : toplevel list } [@@deriving show]
 
 let app_foldl = List.fold_left (fun fn arg -> E_App (fn, arg))
