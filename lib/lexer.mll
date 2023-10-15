@@ -4,13 +4,11 @@
   exception SyntaxError of string
 }
 
-let apos = ['\'']
-
 let digit = ['0'-'9']
 let integer = '-'? digit+
 
-let ident = ['a'-'z' 'A'-'Z' '_']+
-let alpha = ['a'-'z' 'A'-'Z' '0'-'9' '_']+
+let ident = ['a'-'z' 'A'-'Z' '_']
+let alpha = ['a'-'z' 'A'-'Z' '0'-'9' '_']
 
 let newline = ['\n']
 let skippable = [' ' '\t' '\r']
@@ -53,7 +51,7 @@ rule read = parse
   | "false" { BOOL false }
   | ident alpha * ['!' '?' '\'']*? as id { IDENT id }
   | integer as intg { INTEGER (int_of_string intg) }
-  | apos ident alpha * as t { TYPEVAR t }
+  | '\'' ident alpha * as t { TYPEVAR t }
   | eof { EOF }
   | _ { raise @@ SyntaxError ("") }
 

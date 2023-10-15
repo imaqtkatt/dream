@@ -23,6 +23,7 @@ and expr =
   | E_Let of string * expr * expr
   | E_TypAbs of annot * expr
   | E_TypLet of annot * expr * expr
+  | E_Struct of string * field_init list
 [@@deriving show]
 
 and op =
@@ -56,6 +57,12 @@ and struct_field = {
   field_typ : typ;
 }
 
+and field_init = {
+  field_ref : string;
+  field_val : expr;
+}
+
 and program = { decls : toplevel list } [@@deriving show]
 
 let app_foldl = List.fold_left (fun fn arg -> E_App (fn, arg))
+let op_foldl op = List.fold_left (fun l r -> E_Binary (op, l, r))

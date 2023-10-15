@@ -48,10 +48,12 @@ let arr_typ :=
   | l = sub_typ; ARROW; r = sub_typ; { T_Arrow (l, r) }
 
 let prim_typ :=
-  | tv = TYPEVAR; { T_Var tv }
+  | typ_var
   | i = IDENT; { T_Generic (i, []) }
   | i = IDENT; LBRACKET; ts = separated_nonempty_list(COMMA, sub_typ); RBRACKET;
     { T_Generic (i, ts) }
+let typ_var :=
+  | tv = TYPEVAR; { T_Var tv }
 
 (* END types *)
 
@@ -62,8 +64,12 @@ let prog :=
   | EOF; { None }
 
 let prog2 :=
-  | decls = toplevel*; EOF; { Some { decls = decls } }
+  | decls = decls; EOF; { Some { decls = decls } }
   | EOF; { None }
+
+let decls :=
+  | decl = toplevel; { [decl] }
+  | decls = decls; next = toplevel; { decls @ [next] }
 
 let toplevel :=
   | const_decl
@@ -78,7 +84,7 @@ let struct_field ==
   | name = IDENT; COLON; t = sub_typ; { { field_name = name; field_typ = t; } }
 
 let const_decl :=
-  | id = IDENT; t = fn_typ?; EQ; body = expr; { TL_Const (id, t, body) }
+  | id = IDENT; t = fn_typ?; body = fn_body; { TL_Const (id, t, body) }
 
 let fn_decl :=
   | id = IDENT; args = nonempty_list(pat); t = fn_typ?; body = fn_body;
@@ -101,6 +107,7 @@ let expr :=
   | lambda
   | if_expr
   | let_expr
+  | struct_init
 
 let if_expr :=
   | IF; cond = expr; THEN; e1 = expr; ELSE; e2 = expr;
@@ -133,9 +140,15 @@ let lambda :=
   | LT; { Op_Lt }
   | LTE; { Op_Lte }
 
+let struct_init :=
+  | id = IDENT; LBRACE; fields = separated_nonempty_list(COMMA, init_field); RBRACE;
+    { E_Struct (id, fields) }
+let init_field ==
+  | id = IDENT; EQ; body = expr; { { field_ref = id; field_val = body; } }
+
 let op2 :=
   | call
-  | LPARENS; op = op; l = expr; r = expr; RPARENS; { E_Binary (op, l, r) }
+  | LPARENS; op = op; l = expr; r = call_args; RPARENS; { op_foldl op l r }
 
 let call_args :=
   | a = expr; { [a] }

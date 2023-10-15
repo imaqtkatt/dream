@@ -1,9 +1,18 @@
 // Comments are just ignored by the lexer
 
 // We can't do cool things with structs yet
-struct foo {
+struct Lang {
   id : int,
-  name : string
+  name : 'a,
+  easy? : bool
+}
+
+dream = {
+  Lang {
+    id = 42,
+    name = dream_but_we_dont_have_strings_yet,
+    easy? = true
+  }
 }
 
 // Constants
