@@ -118,15 +118,14 @@ let annot :=
     { { var = i; typ = t; } (* Ast.annot *) }
 
 let let_body :=
-  | a = annot; EQ; v = expr; IN; next = expr; { E_TypLet (a, v, next) }
-  | bind = IDENT; EQ; v = expr; IN; next = expr; { E_Let (bind, v, next) }
+  | pat = pat; EQ; v = expr; IN; next = expr; { E_Let (pat, v, next) }
 
 let let_expr :=
   | LET; lb = let_body; { lb }
 
 let lambda :=
-  | LAMBDA; x = IDENT; body = expr; { E_Abs (x, body) }
-  | LAMBDA; a = annot; DOT; body = expr; { E_TypAbs (a, body) }
+  | LAMBDA; x = IDENT; body = expr; { E_Abs (Name x, body) }
+  | LAMBDA; a = annot; DOT; body = expr; { E_Abs (Annot a, body) }
 
 %inline op:
   | PLUS; { Op_Add }

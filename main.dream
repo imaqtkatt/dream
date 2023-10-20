@@ -28,6 +28,7 @@ id (x : 'a) : 'a = x
 type pair = 'a -> 'b -> ('a -> 'b -> 'p) -> 'p
 
 main () : unit =
+  let () = () in
   let fst = @x@y x in
   let snd = @x@y y in
   let fst! = @x@y x in

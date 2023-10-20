@@ -19,10 +19,8 @@ and expr =
   | E_Binary of op * expr * expr
   | E_If of expr * expr * expr
   | E_App of expr * expr
-  | E_Abs of string * expr
-  | E_Let of string * expr * expr
-  | E_TypAbs of annot * expr
-  | E_TypLet of annot * expr * expr
+  | E_Abs of pat * expr
+  | E_Let of pat * expr * expr
   | E_Struct of string * field_init list
 [@@deriving show]
 
